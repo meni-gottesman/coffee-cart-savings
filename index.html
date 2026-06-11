@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brian — let's do business ☕</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+<style>
+  :root{
+    --espresso:#3e2b23; --coffee:#6f4e37; --roast:#4b3026; --caramel:#c98a4b; --crema:#e9d8c2;
+    --cream:#faf4ea; --card:#fffdf8; --line:#e8dccb; --muted:#8a7665;
+    --money:#2e7d32; --money-soft:#edf5ea; --warn:#b35900;
+    --sq:#4078c0; --pfs:#b08800; --clv:#a04040; --tst:#888888;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--cream); color:var(--espresso); line-height:1.45; padding:16px;
+       background-image:radial-gradient(var(--crema) 0.8px, transparent 0.8px); background-size:26px 26px;}
+  .wrap{max-width:680px; margin:0 auto;}
+
+  .hero{background:linear-gradient(135deg,var(--roast),var(--coffee) 45%,#8a6243 75%,var(--roast));
+        background-size:220% 220%; animation:heroShift 18s ease-in-out infinite alternate;
+        border-radius:20px; padding:30px 24px 26px; text-align:center; color:var(--cream);
+        box-shadow:0 8px 26px rgba(62,43,35,.25); margin-bottom:16px; position:relative; overflow:hidden;}
+  @keyframes heroShift{0%{background-position:0% 0%;} 100%{background-position:100% 100%;}}
+  .hero .eyebrow,.hero h1,.hero p,.hero .sig,.hero .cup{opacity:0; animation:rise .7s ease forwards;}
+  .hero .cup{animation-delay:.05s;} .hero .eyebrow{animation-delay:.2s;} .hero h1{animation-delay:.35s;}
+  .hero p{animation-delay:.5s;} .hero .sig{animation-delay:.7s;}
+  @keyframes rise{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;}}
+  .hero .eyebrow{font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--crema); opacity:.85;}
+  .hero h1{font-size:clamp(26px,6vw,38px); margin:8px 0 6px; color:#fff;}
+  .hero p{font-size:14.5px; color:var(--crema); max-width:480px; margin:0 auto;}
+  .hero .sig{margin-top:12px; font-size:13.5px; color:#fff; font-style:italic; opacity:.95;}
+  .cup{font-size:34px; display:inline-block; position:relative;}
+  .steam{position:relative; display:inline-block; width:0;}
+  .steam i{position:absolute; bottom:34px; left:-22px; width:5px; height:13px; border-radius:5px;
+           background:rgba(250,244,234,.5); filter:blur(1.1px); animation:steam 2.8s infinite ease-in-out;}
+  .steam i:nth-child(2){left:-14px; animation-delay:.9s; height:16px;}
+  .steam i:nth-child(3){left:-6px; animation-delay:1.7s; height:11px;}
+  @keyframes steam{0%{transform:translateY(6px) scaleY(.7); opacity:0;}
+                   40%{opacity:.9;} 100%{transform:translateY(-14px) scaleY(1.25); opacity:0;}}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px;
+        padding:16px; margin-bottom:14px; box-shadow:0 2px 6px rgba(111,78,55,.07);
+        transition:box-shadow .2s, opacity .55s ease, transform .55s ease;}
+  .card:hover{box-shadow:0 4px 14px rgba(111,78,55,.12);}
+  .card.pre,.cta.pre{opacity:0; transform:translateY(16px);}
+  .cta{transition:opacity .55s ease, transform .55s ease;}
+  .cardtitle{font-size:13px; font-weight:700; color:var(--coffee); text-transform:uppercase;
+             letter-spacing:.05em; margin-bottom:10px;}
+  .slider-row{margin:16px 0 4px;}
+  .slider-row label{display:flex; justify-content:space-between; align-items:center; font-size:14.5px; font-weight:600; margin-bottom:6px; gap:8px;}
+  .slider-row label output{color:var(--coffee); font-variant-numeric:tabular-nums; font-size:14px;
+       background:var(--crema); border-radius:999px; padding:3px 12px; font-weight:700; white-space:nowrap;}
+  .slider-row .hint{font-weight:400; color:var(--muted); font-size:12px;}
+  input[type=range]{width:100%; -webkit-appearance:none; appearance:none; height:8px; border-radius:99px;
+       background:linear-gradient(90deg, var(--coffee) 0%, #e2d4bf 0%); cursor:pointer; margin:14px 0;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:24px; height:24px; border-radius:50%;
+       background:var(--coffee); border:3px solid #fff; box-shadow:0 1px 5px rgba(62,43,35,.4);
+       transition:box-shadow .15s, transform .15s;}
+  input[type=range]:active::-webkit-slider-thumb{box-shadow:0 0 0 7px rgba(111,78,55,.15); transform:scale(1.08);}
+  input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--coffee);
+       border:3px solid #fff; box-shadow:0 1px 5px rgba(62,43,35,.4);}
+  input[type=range]:focus-visible{outline:3px solid var(--caramel); outline-offset:3px;}
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:480px){.options{grid-template-columns:1fr;}}
+  .opt{border:2px solid var(--line); border-radius:14px; padding:14px 14px 30px; cursor:pointer; transition:.18s; background:#fff; position:relative;}
+  .opt:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(111,78,55,.14);}
+  .opt.active{border-color:var(--coffee); background:var(--crema);}
+  .opt .check{position:absolute; bottom:10px; right:10px; width:22px; height:22px; border-radius:50%;
+       background:var(--money); color:#fff; font-size:13px; line-height:22px; text-align:center;
+       transform:scale(0); transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+  .opt.active .check{transform:scale(1);}
+  .chip:active{transform:scale(.94);}
+  .opt .tag{position:absolute; top:-9px; right:10px; background:var(--caramel); color:#fff;
+            font-size:10.5px; font-weight:700; border-radius:999px; padding:2px 9px; letter-spacing:.03em;}
+  .opt h3{font-size:15px; color:var(--coffee);}
+  .opt .price{font-size:22px; font-weight:800; color:var(--money); margin:3px 0;}
+  .opt p{font-size:12px; color:var(--muted);}
+  .callout{background:var(--crema); border-left:4px solid var(--caramel); border-radius:10px;
+           padding:11px 13px; font-size:12.5px; color:var(--espresso); margin-top:12px;}
+  .callout b{color:var(--coffee);}
+  .vs{font-size:13px; color:var(--muted); margin:14px 0 8px;}
+  .chips{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:8px 14px;
+        font-size:13px; cursor:pointer; transition:.15s; color:var(--espresso);}
+  .chip:hover{border-color:var(--caramel);}
+  .chip.active{border-color:var(--coffee); background:var(--coffee); color:#fff; font-weight:600;}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;}
+  .stat{background:var(--money-soft); border-radius:14px; padding:13px 8px; text-align:center;}
+  .stat .big{font-size:clamp(17px,4.4vw,24px); font-weight:800; color:var(--money); font-variant-numeric:tabular-nums;}
+  .stat .big.pop{animation:pop .35s ease-out;}
+  @keyframes pop{0%{transform:scale(.9); opacity:.5;} 100%{transform:scale(1); opacity:1;}}
+  .stat .lbl{font-size:11.5px; color:var(--muted); margin-top:4px;}
+  .stat.neg .big{color:var(--warn);}
+  #verdict{text-align:center; font-size:14.5px; margin-top:13px; font-weight:600; color:var(--espresso);
+           background:var(--crema); border-radius:999px; padding:8px 14px;}
+  #verdict.warn{color:var(--warn);}
+  #verdict.swap{animation:verdictIn .4s ease;}
+  @keyframes verdictIn{from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:none;}}
+  #miniBar{position:fixed; left:50%; bottom:14px; transform:translate(-50%,140%); z-index:50;
+       background:var(--roast); color:var(--cream); border-radius:999px; padding:10px 18px;
+       box-shadow:0 8px 24px rgba(62,43,35,.35); display:flex; gap:14px; align-items:center;
+       font-size:13px; white-space:nowrap; cursor:pointer; border:none;
+       transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+  #miniBar b{color:#fff; font-variant-numeric:tabular-nums;}
+  #miniBar.show{transform:translate(-50%,0);}
+  .pulse{animation:pulse 2.4s ease-out infinite; transform-origin:center; transform-box:fill-box;}
+  @keyframes pulse{0%{opacity:.55; transform:scale(.6);} 70%{opacity:0; transform:scale(2.1);} 100%{opacity:0; transform:scale(2.1);}}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important; transition:none !important;}
+    .hero .eyebrow,.hero h1,.hero p,.hero .sig,.hero .cup{opacity:1;}
+    .card.pre{opacity:1; transform:none;}
+  }
+  svg{width:100%; height:auto; display:block;}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;}
+  th,td{padding:7px 6px; text-align:left; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums;}
+  th{color:var(--muted); font-size:12px; font-weight:600;}
+  td:last-child,th:last-child{text-align:right;}
+  .you td{font-weight:700; color:var(--money);}
+  details{margin-top:4px;}
+  summary{cursor:pointer; font-weight:700; font-size:14.5px; color:var(--coffee); padding:8px 0;}
+  .math{font-size:13px; background:var(--cream); border-radius:12px; padding:13px; margin-top:8px;}
+  .math p{margin:6px 0; font-variant-numeric:tabular-nums;}
+  .math h4{font-size:13.5px; margin:12px 0 3px; color:var(--coffee);}
+  .math code{background:#fff; border:1px solid var(--line); border-radius:6px; padding:1px 5px; font-size:12px;}
+  .src{font-size:12px; color:var(--muted); margin:6px 0 10px 0; padding-left:14px;}
+  .src li{margin:3px 0;}
+  .src a{color:var(--coffee);}
+  .cta{background:linear-gradient(135deg,var(--coffee),#8a6243); color:var(--cream); text-align:center;
+       border-radius:18px; padding:22px 18px; margin-bottom:14px; box-shadow:0 6px 18px rgba(62,43,35,.2);}
+  .cta h2{color:#fff; font-size:20px; margin-bottom:6px;}
+  .cta p{font-size:14px;}
+  .cta a{color:#fff; font-weight:700;}
+  .foot{font-size:11.5px; color:var(--muted); margin:10px 4px 30px;}
+  .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:6px; justify-content:center;}
+  .legend span::before{content:""; display:inline-block; width:14px; height:3px; border-radius:2px;
+                       margin-right:5px; vertical-align:middle; background:var(--c);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="cup"><span class="steam"><i></i><i></i><i></i></span>☕</div>
+    <div class="eyebrow">A custom app for your Stripe Reader S710</div>
+    <h1>Brian — let's do business.</h1>
+    <p>I built this page just for your cart. Drag the sliders to match your day and watch what your own
+       app saves you — every number sourced, every formula shown, nothing hidden.</p>
+    <div class="sig">— Meni</div>
+  </div>
+
+  <div class="card">
+    <div class="cardtitle">📍 Where you are on the coffee-cart journey</div>
+    <svg id="bench" viewBox="0 0 640 120" role="img" aria-label="Your volume vs industry milestones"></svg>
+  </div>
+
+  <div class="card">
+    <div class="cardtitle">🛠 Your cart, your day</div>
+    <div class="slider-row">
+      <label>☕ Orders per day, each location <span class="hint">you: ~25 · established carts: ~80</span> <output id="oOrders">25</output></label>
+      <input type="range" id="orders" min="5" max="250" step="1" value="25">
+    </div>
+    <div class="slider-row">
+      <label>📍 Locations per day <span class="hint">office park a.m. + market p.m.</span> <output id="oLocs">1</output></label>
+      <input type="range" id="locs" min="1" max="4" step="1" value="1">
+    </div>
+    <div class="slider-row">
+      <label>📅 Days you work per month <output id="oDays">22</output></label>
+      <input type="range" id="days" min="4" max="30" step="1" value="22">
+    </div>
+    <div class="slider-row">
+      <label>💵 Average sale <span class="hint">drink + occasional beans/pastry</span> <output id="oPrice">$4.00</output></label>
+      <input type="range" id="price" min="4" max="12" step="0.25" value="4">
+    </div>
+    <div class="slider-row">
+      <label>💳 Orders paid by card <output id="oCard">85%</output></label>
+      <input type="range" id="card" min="50" max="100" step="5" value="85">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cardtitle">🤝 Pick your pricing — I cover the dev hardware either way</div>
+    <div class="options">
+      <div class="opt active" id="optOne" data-opt="one">
+        <span class="tag">BEST LONG-RUN</span>
+        <h3>Own it</h3>
+        <div class="price">$550 once</div>
+        <p>$0/month, no fees, ever. App + source code are yours. I cover the DevKit.</p>
+        <span class="check">✓</span>
+      </div>
+      <div class="opt" id="optPct" data-opt="pct">
+        <span class="tag">EASY START</span>
+        <h3>Easy start</h3>
+        <div class="price">$200 + 0.25%/sale</div>
+        <p>$200 down, then 0.25% per sale — never more than $29/month, and $1,000 all-in lifetime max. Hit the cap and it's 100% yours. Always cheaper than every alternative, guaranteed in writing.</p>
+        <span class="check">✓</span>
+      </div>
+    </div>
+    <div class="callout">💡 <b>Reality check:</b> agencies quote custom POS builds at
+      <b>$8,000–$30,000 even at the basic end</b>, and $35,000–$150,000 for mid-to-enterprise systems
+      (sources below). This is <b>$550 — under 7% of the lowest typical quote</b>. How? The scope is lean
+      (one cart, one operator), Stripe's certified payment SDK does the heavy lifting, I keep the reusable
+      framework to offer other carts, and you're my pilot reference. You get the low price; I get the head start.</div>
+    <div class="vs">Compare against:</div>
+    <div class="chips" id="chips">
+      <button class="chip active" data-alt="square">Square</button>
+      <button class="chip" data-alt="pfs">Payment-for-Stripe*</button>
+      <button class="chip" data-alt="clover">Clover</button>
+      <button class="chip" data-alt="toast">Toast</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="big" id="save">–</div><div class="lbl">💰 saved per year</div></div>
+      <div class="stat" id="sPayCard"><div class="big" id="payback">–</div><div class="lbl" id="paybackLbl">⏱ until it's paid for itself</div></div>
+      <div class="stat" id="sAheadCard"><div class="big" id="ahead">–</div><div class="lbl" id="aheadLbl">📈 ahead after 5 years</div></div>
+    </div>
+    <div id="verdict"></div>
+  </div>
+
+  <div class="card">
+    <div class="cardtitle">📈 Software + card fees over 5 years <span style="font-weight:400; text-transform:none; letter-spacing:0;">(hardware left out — you already own your reader)</span></div>
+    <svg id="chart" viewBox="0 0 640 300" role="img" aria-label="Cumulative software cost over 5 years"></svg>
+    <div class="legend">
+      <span style="--c:var(--money)">This app</span><span style="--c:var(--sq)">Square</span>
+      <span style="--c:var(--pfs)">Payment-for-Stripe*</span><span style="--c:var(--clv)">Clover</span>
+      <span style="--c:var(--tst)">Toast</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <details id="mathDetails">
+      <summary>🧮 The full math — every number, every step</summary>
+      <table id="tbl">
+        <thead><tr><th>Option</th><th>Cost per sale</th><th>Monthly fee</th><th>You save / year</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="math" id="math"></div>
+    </details>
+    <details>
+      <summary>📚 Sources for every number (multiple per claim)</summary>
+      <div class="math">
+        <h4>Cart volume &amp; the journey milestones</h4>
+        <ul class="src">
+          <li>Cart-King, <a href="https://cart-king.com/cart-and-kiosk-articles/coffee-cart-startup-costs-complete-financial-guide-2025/">Coffee Cart Startup Costs — Financial Guide 2025</a> — new operators 8–12 drinks/hr peak; ~12 drinks/day break-even; 42/78/130 drinks/day scenario models.</li>
+          <li>CoffeeShopStartups, <a href="https://coffeeshopstartups.com/how-many-cups-coffee-truck-serve-in-a-day/">How many cups does a coffee truck serve?</a> — 70–150 cups/day regular spots; ~24–30 lattes/hr per group head (the one-person ceiling); events 150–500.</li>
+          <li>BizzOnWheels, <a href="https://www.bizzonwheels.com/blogs/bizzonwheels-blog/how-to-start-a-coffee-cart-business">How to start a coffee cart business</a> — 80–100 drinks per peak window, established carts.</li>
+          <li>BaristaLife, <a href="https://baristalife.co/blogs/blog/mobile-espresso-cart-profits">Mobile espresso cart profits</a> — 50–150 customers/day; $150–300/day new carts, $200–800/day established.</li>
+          <li>VettedBiz, <a href="https://www.vettedbiz.com/resources/coffee-cart-business">Coffee cart business</a> — first-year gross $30k–80k.</li>
+        </ul>
+        <h4>Drink &amp; ticket prices (2025–26)</h4>
+        <ul class="src">
+          <li>Toast POS data, <a href="https://pos.toasttab.com/blog/on-the-line/coffee-pricing">Coffee pricing report</a> — US average latte $5.60, +3.8%/yr.</li>
+          <li>Toast POS data, <a href="https://pos.toasttab.com/blog/data/coffee-prices-trends-by-state">Coffee prices by state</a> — California ~26% above national average.</li>
+          <li>Axios SF, <a href="https://www.axios.com/local/san-francisco/2025/09/29/coffee-prices-rise-san-francisco-2025">SF coffee prices, Sept 2025</a> — SF median coffee $4.92, +9.4%/yr → SF latte ≈ $6.25–6.75 in 2026.</li>
+          <li>Fresh Cup, <a href="https://freshcup.com/latte-price/">What does a latte cost?</a> — state-by-state latte baselines.</li>
+          <li>Dojo Business, <a href="https://dojobusiness.com/blogs/news/coffee-shop-average-ticket">Coffee shop average ticket</a> — ticket runs ~1.15–1.25× drink price with food attach.</li>
+        </ul>
+        <h4>How long carts last (used to set the prices)</h4>
+        <ul class="src">
+          <li>U.S. Bureau of Labor Statistics, <a href="https://www.bls.gov/bdm/">Business Employment Dynamics</a> — establishment survival: food service ~83% yr 1, ~58% yr 5 (better than the all-industry average).</li>
+          <li>LendingTree, <a href="https://www.lendingtree.com/business/small/failure-rate/">analysis of BLS business survival data</a> — corroborating 1/3/5-yr survival computations.</li>
+          <li>Luo &amp; Stark (2014), UC Berkeley/BLS restaurant-mortality study — only ~17% of restaurants fail in year 1; median small-restaurant lifespan ~3.75–4.5 yrs. (The viral “60% of food trucks fail” stat has no primary source — we don't use it.)</li>
+          <li>Our blended curve for a one-person cart: 78% / 67% / 57% / 50% / 44% surviving years 1–5.</li>
+        </ul>
+        <h4>What custom POS development normally costs</h4>
+        <ul class="src">
+          <li>Dev Technosys (2026), <a href="https://devtechnosys.com/insights/pos-software-development-cost/">POS software development cost</a> — MVP $8,000–$12,000+; mid-level $15,000–$25,000+; overall $8k–$30k+.</li>
+          <li>Netclues (2025), <a href="https://www.netclues.com/blog/pos-software-development-cost-2025">The real cost of POS software development</a> — basic POS app $15,000–$30,000; mid-level cloud $35,000–$70,000; enterprise $80,000–$150,000+.</li>
+          <li>Crest Infosystems, <a href="https://www.crestinfosystems.com/cost-pos-software-development/">Cost of POS software development</a> — basic $30,000–$50,000; advanced $60,000–$100,000.</li>
+          <li>This build: <b>$550</b> (or $200 + capped 0.25%) — ~4–7% of the lowest typical quote, for the reasons in the reality-check note above.</li>
+        </ul>
+        <h4>Processing rates (published, June 2026)</h4>
+        <ul class="src">
+          <li>Stripe, <a href="https://stripe.com/pricing">pricing</a> — in-person 2.7% + 5¢ (what this app pays; Zero-upfront adds 0.25%).</li>
+          <li>Square, <a href="https://squareup.com/us/en/pricing">pricing</a> — in-person 2.6% + 15¢ on the free plan.</li>
+          <li>Clover, <a href="https://www.clover.com/pricing">pricing</a> — 2.6% + 10¢ plus $14.95/mo service plan.</li>
+          <li>Toast, <a href="https://pos.toasttab.com/pricing">pricing</a> — pay-as-you-go 3.09% + 15¢.</li>
+          <li>Payment-for-Stripe, <a href="https://support.payment.co/hc/en-us/articles/360027107892">support: card-reader rate</a> (+1.0% app fee) and <a href="https://support.payment.co/hc/en-us/articles/360027114252">support: offline requires a Bluetooth reader</a> (no offline on the S710).</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <div class="cta">
+    <h2>Sound good? Let's pour. ☕</h2>
+    <p>Pick whichever option feels right — either way you get everything we discussed, a 100% satisfaction
+       guarantee, and you're live in about 8 weeks.<br>
+       <a href="mailto:menigottesman@gmail.com">menigottesman@gmail.com</a></p>
+  </div>
+
+  <p class="foot">*Payment-for-Stripe is the one existing app for your S710 — per its own support docs its offline mode
+  doesn't work on this reader. Shown for price comparison only.<br><br>
+  Hardware is deliberately excluded from all math: you already own your S710, and I cover the DevKit in both options
+  (competitor hardware — Square $299, Clover $649 — would only make their lines worse). Cash sales cost nothing on any
+  system. Savings are projections, not a guarantee; offline-stored payments can occasionally decline when they sync
+  (true of every offline POS). This page is for information only and isn't part of any agreement.</p>
+</div>
+
+<button id="miniBar" aria-label="Jump to results">💰 <b id="mSave">–</b> <span>·</span> ⏱ <b id="mPb">–</b> <span>·</span> 📈 <b id="mAhead">–</b></button>
+
+<script>
+const PRICE_ONE = 550, B_UP = 200, PCT = 0.0025, MO_CAP = 29, FEE_CAP = 800; // B all-in max = $200 + $800 = $1,000
+const ALTS = {
+  square:{name:'Square',              pct:0.026,  fix:0.15, mo:0,     color:'var(--sq)'},
+  pfs:   {name:'Payment-for-Stripe*', pct:0.037,  fix:0.05, mo:0,     color:'var(--pfs)'},
+  clover:{name:'Clover',              pct:0.026,  fix:0.10, mo:14.95, color:'var(--clv)'},
+  toast: {name:'Toast',               pct:0.0309, fix:0.15, mo:0,     color:'var(--tst)'},
+};
+const OURS = {pct:0.027, fix:0.05};
+const $ = id => document.getElementById(id);
+let selected = 'square', pricing = 'one';
+
+const fee = (o,t) => o.pct*t + o.fix;
+const r4  = x => Math.round(x*10000)/10000;
+const usd = (x,d=0) => (x<0?'-':'') + '$' + Math.abs(x).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+const pop = id => { const el=$(id); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let chartDrawn = false;
+
+function countUp(el, to){
+  const from = +el.dataset.v || 0; el.dataset.v = to;
+  if (reduceMotion || Math.abs(to - from) < 1){ el.textContent = usd(to); return; }
+  const t0 = performance.now(), dur = 450;
+  const step = now => {
+    const k = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = usd(from + (to - from) * e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  setTimeout(()=>{ if (+el.dataset.v === to) el.textContent = usd(to); }, dur + 120);
+}
+function paintSlider(el){
+  const pct = (el.value - el.min) / (el.max - el.min) * 100;
+  el.style.background = `linear-gradient(90deg, var(--coffee) ${pct}%, #e2d4bf ${pct}%)`;
+}
+
+function values(){
+  return { orders:+$('orders').value, locs:+$('locs').value, days:+$('days').value,
+           price:+$('price').value, card:+$('card').value/100 };
+}
+function bFeeMonthly(vol, t){ return Math.min(r4(PCT*t)*vol, MO_CAP); }
+function ourCostCum(m, vol, t){
+  return pricing==='one' ? PRICE_ONE : B_UP + Math.min(bFeeMonthly(vol,t)*m, FEE_CAP);
+}
+
+function recalc(){
+  const v = values();
+  const vol = v.orders * v.locs * v.days * v.card;
+  $('oOrders').textContent = v.orders;
+  $('oLocs').textContent = v.locs;
+  $('oDays').textContent = v.days;
+  $('oPrice').textContent = usd(v.price,2);
+  $('oCard').textContent = Math.round(v.card*100)+'%';
+
+  const alt = ALTS[selected];
+  const gapStripe = r4(fee(alt,v.price) - fee(OURS,v.price));
+  const altPenaltyMo = gapStripe*vol + alt.mo;
+  const bFee = bFeeMonthly(vol, v.price);
+  const moSaveY1 = pricing==='one' ? altPenaltyMo : altPenaltyMo - bFee;
+  const yrSave = moSaveY1*12;
+  const ahead5 = altPenaltyMo*60 - ourCostCum(60, vol, v.price);
+  const upfront = pricing==='one' ? PRICE_ONE : B_UP;
+  const pbMonths = moSaveY1>0 ? upfront/moSaveY1 : Infinity;
+
+  countUp($('save'), yrSave);
+  $('payback').textContent = !isFinite(pbMonths) ? '—'
+      : pbMonths <= 24 ? Math.max(1,Math.round(pbMonths))+' mo'
+      : (pbMonths/12).toFixed(1)+' yrs';
+  $('paybackLbl').textContent = "⏱ until it's paid for itself";
+  countUp($('ahead'), ahead5);
+  $('aheadLbl').textContent = '📈 '+(ahead5>=0?'ahead':'behind')+' after 5 years';
+  $('sAheadCard').classList.toggle('neg', ahead5<0);
+  $('sPayCard').classList.toggle('neg', pbMonths>60);
+  pop('payback');
+  $('mSave').textContent = usd(yrSave)+'/yr';
+  $('mPb').textContent = $('payback').textContent;
+  $('mAhead').textContent = usd(ahead5);
+
+  const verdict = $('verdict');
+  const prevVerdict = verdict.textContent;
+  verdict.classList.remove('warn');
+  const altName = alt.name.replace('*','');
+  if (pbMonths <= 3)       verdict.textContent = 'Pays for itself almost immediately — then it’s pure savings. ✅';
+  else if (pbMonths <= 12) verdict.textContent = 'Pays for itself in under a year, then it’s pure savings. ✅';
+  else if (pbMonths <= 36) verdict.textContent = 'Pays for itself in '+(pbMonths/12).toFixed(1)+' years, then saves every month after — forever.';
+  else if (pbMonths <= 60) verdict.textContent = 'Pays for itself in year '+Math.ceil(pbMonths/12)+' at this volume — sooner if you grow.';
+  else { verdict.textContent = 'At this volume, honestly, neither option earns its keep on fees alone — it wins as you grow.'; verdict.classList.add('warn'); }
+  if (verdict.textContent !== prevVerdict && !reduceMotion){
+    verdict.classList.remove('swap'); void verdict.offsetWidth; verdict.classList.add('swap');
+  }
+
+  // table
+  const tb = $('tbl').querySelector('tbody');
+  tb.innerHTML = '';
+  const mk = (cells, cls) => { const tr=document.createElement('tr'); if(cls)tr.className=cls;
+    cells.forEach(c=>{const td=document.createElement('td'); td.textContent=c; tr.appendChild(td);}); tb.appendChild(tr); };
+  mk(['This app — '+(pricing==='one'?'Own it ($550 once)':'Easy start ($200 + 0.25%)'),
+      usd(fee(OURS,v.price) + (pricing==='pct'? r4(PCT*v.price):0),2),
+      pricing==='pct' ? usd(bFee,2)+' (capped)' : '$0', '—'], 'you');
+  for (const k of Object.keys(ALTS)){
+    const a = ALTS[k];
+    const g = r4(fee(a,v.price)-fee(OURS,v.price));
+    const sv = (pricing==='one' ? g*vol + a.mo : g*vol + a.mo - bFee)*12;
+    mk([a.name, usd(fee(a,v.price),2), a.mo?usd(a.mo,2):'$0', usd(sv)]);
+  }
+
+  // full math
+  let h = '<h4>Step 1 — your volume</h4>'+
+    '<p><b>Card sales/month</b> = '+v.orders+' orders × '+v.locs+' location'+(v.locs>1?'s':'')+' × '+v.days+' days × '+Math.round(v.card*100)+'% card = <code>'+Math.round(vol)+'</code></p>'+
+    '<h4>Step 2 — what each option skims per '+usd(v.price,2)+' sale</h4>'+
+    '<p><b>This app</b> = 2.7% × '+usd(v.price,2)+' + 5¢'+(pricing==='pct'?' + 0.25% × '+usd(v.price,2)+' (my fee)':'')+' = <code>'+usd(fee(OURS,v.price)+(pricing==='pct'?r4(PCT*v.price):0),2)+'</code></p>';
+  for (const k of Object.keys(ALTS)){
+    const a = ALTS[k];
+    h += '<p><b>'+a.name+'</b> = '+(a.pct*100).toFixed(a.pct===0.0309?2:1)+'% × '+usd(v.price,2)+' + '+Math.round(a.fix*100)+'¢ = <code>'+usd(fee(a,v.price),2)+'</code>'+(a.mo?' plus '+usd(a.mo,2)+'/mo':'')+'</p>';
+  }
+  h += '<h4>Step 3 — yearly savings vs each (gap × '+Math.round(vol)+' sales × 12'+(pricing==='pct'?' − my capped fee':'')+')</h4>';
+  for (const k of Object.keys(ALTS)){
+    const a = ALTS[k];
+    const g = r4(fee(a,v.price)-fee(OURS,v.price));
+    h += '<p><b>vs '+a.name+'</b>: ('+usd(fee(a,v.price),2)+' − '+usd(fee(OURS,v.price),2)+') × '+Math.round(vol)+(a.mo?' + '+usd(a.mo,2)+'/mo':'')+(pricing==='pct'?' − '+usd(bFee,2)+'/mo':'')+' = <code>'+usd((pricing==='one'?g*vol+a.mo:g*vol+a.mo-bFee),2)+'/mo</code> → <b>'+usd((pricing==='one'?g*vol+a.mo:g*vol+a.mo-bFee)*12)+'/yr</b></p>';
+  }
+  if (pricing==='pct'){
+    h += '<h4>Step 4 — my fee, double-capped</h4>'+
+      '<p>0.25% × '+usd(v.price,2)+' × '+Math.round(vol)+' = '+usd(r4(PCT*v.price)*vol,2)+'/mo → charged: <code>'+usd(bFee,2)+'/mo</code> (cap $29/mo)</p>'+
+      '<p>All-in cap: $200 start + fees that stop forever at <code>$800</code> = <code>$1,000 lifetime max</code>'+(bFee>0?' — at this volume the fee cap hits '+(bFee*60>=FEE_CAP? 'month '+Math.ceil(FEE_CAP/bFee) : 'never within 5 yrs ('+usd(bFee*60)+' in fees)')+', then the app is 100% yours':'')+'.</p>'+
+      '<h4>Step 5 — payback &amp; 5-year position vs '+alt.name+'</h4>'+
+      '<p><b>Payback on the $200</b> = $200 ÷ '+usd(moSaveY1,2)+'/mo net saving = <code>'+(isFinite(pbMonths)?pbMonths.toFixed(1)+' months':'—')+'</code></p>'+
+      '<p><b>After 5 years</b> = '+usd(altPenaltyMo,2)+'/mo avoided × 60 − '+usd(ourCostCum(60,vol,v.price))+' total paid = <code>'+usd(ahead5)+'</code></p>';
+  } else {
+    h += '<h4>Step 4 — payback &amp; 5-year position vs '+alt.name+'</h4>'+
+      '<p><b>Payback</b> = $550 ÷ '+usd(altPenaltyMo,2)+'/mo = <code>'+(isFinite(pbMonths)?pbMonths.toFixed(1)+' months':'—')+'</code></p>'+
+      '<p><b>After 5 years</b> = '+usd(altPenaltyMo,2)+' × 60 − $550 = <code>'+usd(ahead5)+'</code></p>';
+  }
+  h += '<h4>Why these two prices are fair (honestly, generous)</h4>'+
+    '<p>• <b>$550 once</b>: federal survival data (78% of food businesses make year 1, 44% year 5) says a fair price — one a typical cart recoups before the typical failure window — would be about $1,236. I’m charging less than HALF that, because I’d rather earn your future business than maximize this job. Even if your volume never grows past today’s ~25/day, $550 pays itself back in ~15 months; at an established cart’s volume, ~3 months.</p>'+
+    '<p>• <b>$200 + 0.25% per sale</b>: the strict always-cheaper ceiling computes to 0.50% — this fee is HALF that, then double-capped ($29/mo, $1,000 all-in lifetime → then it’s yours, free, forever). The two options cross around month 12 at a good location: confident? Own it. Testing the waters? Easy start. If any mainstream option would ever total less at your volume, the fee drops to beat it — in writing.</p>';
+  $('math').innerHTML = h;
+
+  drawBench(v.orders * v.locs);
+  drawChart(vol, v.price);
+}
+
+function drawBench(current){
+  const W=640, H=120, L=26, R=20, y=64, MAX=250;
+  const cur = Math.min(current, MAX);
+  const X = n => L + (W-L-R)*n/MAX;
+  let g = `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e2d4bf" stroke-width="7" stroke-linecap="round"/>`;
+  g += `<line x1="${L}" y1="${y}" x2="${X(cur)}" y2="${y}" stroke="var(--coffee)" stroke-width="7" stroke-linecap="round"/>`;
+  // lanes: 'A' above, 'B' below
+  const marks = [[25,'You today','B'],[50,'Regular spot','A'],
+                 [80,'Established','B'],[130,'Solo max','A'],[200,'Events / 2 baristas','B']];
+  for (const [n,label,lane] of marks){
+    g += `<line x1="${X(n)}" y1="${y-10}" x2="${X(n)}" y2="${y+10}" stroke="#b29a7e" stroke-width="2"/>`;
+    const anchor = n>=200?'end':'middle';
+    const lx = X(n);
+    const ly = lane==='A'? y-28 : y+22;
+    g += `<text x="${lx}" y="${ly}" font-size="11" fill="#8a7665" text-anchor="${anchor}">${label}</text>`;
+    g += `<text x="${lx}" y="${ly+12}" font-size="10.5" font-weight="600" fill="#8a7665" text-anchor="${anchor}">${n}/day</text>`;
+  }
+  g += `<circle class="pulse" cx="${X(cur)}" cy="${y}" r="10" fill="var(--coffee)"/>`;
+  g += `<circle cx="${X(cur)}" cy="${y}" r="10" fill="var(--coffee)" stroke="#fff" stroke-width="2.5"/>`;
+  const dx = Math.min(Math.max(X(cur), L+30), W-R-30);
+  g += `<text x="${dx}" y="${y+52}" font-size="13" font-weight="800" fill="var(--coffee)" text-anchor="middle">${current}/day</text>`;
+  $('bench').innerHTML = g;
+}
+
+function drawChart(vol, price){
+  const W=640, H=300, L=58, R=12, T=16, B=34;
+  const months=[...Array(61).keys()];
+  const stripeCum = m => fee(OURS,price)*vol*m;
+  const ourPts = months.map(m=>ourCostCum(m,vol,price)+stripeCum(m));
+  const series = [{k:'ours', color:'var(--money)', w:3.4, pts:ourPts}];
+  for (const k of Object.keys(ALTS)){
+    const a=ALTS[k];
+    series.push({k, color:a.color, w:selected===k?2.4:1.4, faint:selected!==k,
+                 pts:months.map(m=>a.mo*m + fee(a,price)*vol*m)});
+  }
+  const maxY = Math.max(...series.flatMap(s=>s.pts))*1.06 || 1;
+  const X = m => L + (W-L-R)*m/60;
+  const Y = c => T + (H-T-B)*(1 - c/maxY);
+  let g = '';
+  for (let i=0;i<=4;i++){
+    const cy = maxY*i/4;
+    g += `<line x1="${L}" y1="${Y(cy)}" x2="${W-R}" y2="${Y(cy)}" stroke="#e8dccb" stroke-width="1"/>`;
+    g += `<text x="${L-7}" y="${Y(cy)+4}" font-size="11" fill="#8a7665" text-anchor="end">$${cy>=1000?(cy/1000).toFixed(cy>=10000?0:1)+'k':Math.round(cy/50)*50}</text>`;
+  }
+  for (let yr=0;yr<=5;yr++)
+    g += `<text x="${X(yr*12)}" y="${H-12}" font-size="11" fill="#8a7665" text-anchor="middle">${yr===0?'now':'yr '+yr}</text>`;
+  // area fill under our line
+  const area = ourPts.map((c,m)=>(m?'L':'M')+X(m).toFixed(1)+','+Y(c).toFixed(1)).join('')
+             + `L${X(60).toFixed(1)},${Y(0)}L${X(0).toFixed(1)},${Y(0)}Z`;
+  g += `<path d="${area}" fill="rgba(46,125,50,0.07)" stroke="none"/>`;
+  const order = series.filter(s=>s.faint).concat(series.filter(s=>!s.faint&&s.k!=='ours'), series.filter(s=>s.k==='ours'));
+  for (const s of order){
+    const d = s.pts.map((c,m)=>(m?'L':'M')+X(m).toFixed(1)+','+Y(c).toFixed(1)).join('');
+    g += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.w}" opacity="${s.faint?0.3:1}" stroke-linecap="round"/>`;
+  }
+  const ours = ourPts, alt = series.find(s=>s.k===selected).pts;
+  let cross = -1;
+  for (let m=1;m<=60;m++) if (ours[m] <= alt[m]) { cross=m; break; }
+  if (cross > 0){
+    const label = cross===1 ? 'cheaper from day one' : `cheaper from month ${cross}`;
+    g += `<circle cx="${X(cross)}" cy="${Y(ours[cross])}" r="5.5" fill="var(--money)"/>`;
+    const tx = Math.min(X(cross)+10, W-170);
+    g += `<text x="${tx}" y="${Math.max(Y(ours[cross])-20, 14)}" font-size="12" font-weight="700" fill="var(--money)" stroke="#fffdf8" stroke-width="3.5" paint-order="stroke">${label}</text>`;
+  }
+  $('chart').innerHTML = g;
+  if (!chartDrawn && !reduceMotion){
+    chartDrawn = true;
+    $('chart').querySelectorAll('path[stroke]:not([stroke="none"])').forEach((p,i)=>{
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      requestAnimationFrame(()=>{
+        p.style.transition = 'stroke-dashoffset .9s ease '+(i*0.12)+'s';
+        p.style.strokeDashoffset = 0;
+        setTimeout(()=>{ p.style.strokeDasharray=''; p.style.strokeDashoffset=''; p.style.transition=''; }, 1500+i*120);
+      });
+    });
+  }
+}
+
+document.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.opt').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); pricing=b.dataset.opt; recalc();
+}));
+document.querySelectorAll('#chips .chip').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#chips .chip').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); selected=b.dataset.alt; recalc();
+}));
+['orders','locs','days','price','card'].forEach(id=>{
+  const el = $(id);
+  el.addEventListener('input', ()=>{ paintSlider(el); recalc(); });
+  paintSlider(el);
+});
+
+// scroll-reveal cards (one-time, staggered)
+if (!reduceMotion){
+  const io = new IntersectionObserver(es=>es.forEach(e=>{
+    if (e.isIntersecting){
+      e.target.classList.remove('pre');
+      setTimeout(()=>{ e.target.style.transitionDelay=''; }, 700);
+      io.unobserve(e.target);
+    }
+  }), {threshold:.08});
+  document.querySelectorAll('.card, .cta').forEach((c,i)=>{
+    c.classList.add('pre'); c.style.transitionDelay = (Math.min(i,4)*0.07)+'s'; io.observe(c);
+  });
+  // failsafe: nothing may ever stay hidden
+  setTimeout(()=>{ document.querySelectorAll('.card.pre,.cta.pre').forEach(c=>c.classList.remove('pre')); }, 2200);
+}
+
+// sticky live-results pill: visible whenever the stats are off-screen
+const statsEl = document.querySelector('.stats');
+new IntersectionObserver(es=>{
+  $('miniBar').classList.toggle('show', !es[0].isIntersecting);
+}, {threshold:0}).observe(statsEl);
+$('miniBar').addEventListener('click', ()=>statsEl.scrollIntoView({behavior:'smooth', block:'center'}));
+
+recalc();
+</script>
+</body>
+</html>
